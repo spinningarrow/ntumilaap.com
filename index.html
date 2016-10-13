@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="utf-8" />
+	
+	<title>Milaap 2011</title>
+	
+	<!-- Uses the 960 Grid System, largely because of all the boxes -->
+	<link rel="stylesheet" href="css/960.css" />
+	<link rel="stylesheet" href="css/milaap2011.css" />
+	
+	<!-- Google analytics -->
+	<script type="text/javascript">
+
+	  var _gaq = _gaq || [];
+	  _gaq.push(['_setAccount', 'UA-17866416-1']);
+	  _gaq.push(['_trackPageview']);
+	
+	  (function() {
+		var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+		ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+		var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+	  })();
+	
+	</script>
+	
+	<script src="js/jquery-1.6.1.min.js"></script>
+    <script src="js/jquery.lightbox-0.5.min.js"></script>
+    <script>
+
+	$(document).ready(function () {
+	
+		// If you've got here, JavaScript (or jQuery) works
+			// Hide content meant for disabled javascript
+			$(".noscript").hide();
+			
+			// Hide bottom borders on "pages". Quick fix, I know. Swapping classes might be better.
+			$(".pseudopage").css("border-bottom", "none");
+	
+		// Show "loading" icon when AJAX or iframe loading is in progress
+			$("#loading")
+						.ajaxStart(function() {
+							$(this).addClass("loading");
+						})
+						.ajaxStop(function() {
+							$(this).removeClass("loading");
+						});
+						
+			$("iframe").load(function () {
+				$("#loading").removeClass("loading");
+			});
+				    
+		// Show the "page" corresponding to the URL hash
+		var hash = window.location.hash;
+		hash = (hash != "" && hash != "#") ? hash : "#home";
+		
+		if ($(hash).length !== 0) { // check if the "page" exists
+			loadPseudoPage(hash);
+		}
+		else {
+			$("#notfound").show();
+		}
+		
+		// Bind links to boxes on home page
+			$("#home h2").css("cursor", "pointer");
+			
+			$("#home h2").click(function () {
+				loadPseudoPage( $(this).parent().find("a:first").attr("href") );
+			});
+		
+		// Show appropriate page when link to a "page" is clicked
+		$("a.internal-link").click(function () {
+			loadPseudoPage($(this).attr("href"));
+		});
+		
+		// Load Milaap Guide pages
+		$("#milaapguide ol.ajax-links a").click(function (event) {
+			var href = $(this).attr("href");
+		
+			$("#milaapguide-html").load(href + " #content", function (response, status, xhr) {
+				ajaxErrorDisplay(status, xhr, "#milaapguide-html", href);
+			});
+			
+			event.preventDefault();
+		});
+
+		// Main function that displays the appropriate "page"		
+		function loadPseudoPage(hash) {
+			$("#nav .internal-link").removeClass("highlight");
+			$("iframe").filter(":visible").hide();
+			$(".pseudopage").filter(":visible").hide();
+			
+			if (hash == "#register") {
+				// Load and show the iframe
+				if ($("#register iframe").length !== 0) { // registration is open
+					$("#loading").addClass("loading");
+				}
+				
+				$(hash + " iframe")
+					.attr("src", "https://spreadsheets0.google.com/spreadsheet/embeddedform?formkey=dGJyZHA3a203UjRZSmFkNG1SYXpnRXc6MQ")
+					.load(function () {
+						$(this).show('fast');
+					});
+			}
+			
+			else if (hash == "#committee") {
+				// Show committee.html via ajax
+				$("#committee-html").load("committee.html #content", function (response, status, xhr) {
+					ajaxErrorDisplay(status, xhr, "#committee-html", "committee.html");
+				});
+			}
+			
+			else if (hash == "#askus") {
+				// Load and show the iframe
+				$("#loading").addClass("loading");
+				
+				$(hash + " iframe")
+					.attr("src", "http://ntumilaap.wufoo.com/embed/z7x3k7/")
+					.load(function () {
+						$(this).show('fast');
+					});
+			}
+			
+			else if (hash == "#gallery") {
+				// Show gallery.php via ajax
+				$("#gallery-html").load("gallery.php #content", function () {
+					$(".photogallery a").lightBox();	
+				});
+			}
+			
+			$(hash).show('fast');
+			$("#nav .internal-link[href='" + hash + "']").addClass("highlight");
+		}
+		
+		// Ajax error handler for pages
+		function ajaxErrorDisplay(status, xhr, displayElement, href) {
+			if (status == "error") {
+				$(displayElement).html("<p>There was an error loading the page. <a href='" + href + "' target='_blank'>Click here to see it in a new window</a>.</p> <p>[" + xhr.status + " " + xhr.statusText + "]</p>");
+			}
+		}
+		
+		// FAQ scripting
+		$(".faq-list dd").hide();
+		$(".faq-list dt").click(function () {
+			$(this).next("dd").toggle('fast');
+		});
+	});
+	
+	</script>
+</head>
+
+<body>
+
+	<div id="outer-wrapper" class="container_12">
+	
+		<div id="header" class="grid_12 push_12">
+			<!-- insert logo and link to fan page here -->
+	
+			<div class="grid_8 alpha">
+	            <h1 class="">Milaap 2011</h1>
+            </div>
+            
+            <div class="grid_4 omega">
+				<div class="" id="facebook">
+					<p>Like <a href="http://www.facebook.com/ntumilaap">NTU Milaap</a> on Facebook.<br/>See photos, meet other freshmen and stay up to date with us!</p>
+				</div>
+				<div id="important">
+					<p>Some kind of announcement.<!-- Registration will open on Monday, 20 May 2011!--><!-- <a href="#register" class="internal-link">Registration</a> is now open! --></p>
+				</div>
+            </div>
+            
+		</div> <!-- end #header -->
+		
+		<ul id="nav" class="grid_11">
+		  	<li><a href="#home" class="internal-link">home</a></li>
+            <li><a href="#register" class="internal-link">register</a></li>
+            <li><a href="#schedule" class="internal-link">schedule</a></li>
+            <li><a href="#about" class="internal-link">about milaap 2011</a></li>
+            <li><a href="#committee" class="internal-link">committee</a></li>
+            <li><a href="#askus" class="internal-link">ask us</a></li>
+            <li><a href="#faq" class="internal-link">faq</a></li>
+            <li><a href="#milaapguide" class="internal-link">milaap guide</a></li>
+            <li><a href="#gallery" class="internal-link highlight">gallery</a></li>
+            <li><a href="#links" class="internal-link">links</a></li>
+			<li class="last"><a href="#contact" class="internal-link">contact</a></li>
+		</ul> <!-- end #nav -->
+		
+		<div id="loading" class="grid_1">
+		</div>
+		
+        <!-- HOME SECTION -->
+        <div id="home" class="grid_12 push_12 pseudopage">
+
+          <div class="grid_4 alpha box one">
+              <h2>Register</h2>
+              <p><a href="#register" class="internal-link">Register now</a> for Milaap 2011!</p>
+          </div>
+          
+          <div class="grid_4 box two">
+              <h2>Schedule</h2>
+              <p><a href="#schedule" class="internal-link">Event schedule</a> (5 – 8 August 2011)</p>
+          </div>
+          
+          <div class="grid_4 omega box three">
+              <h2>About</h2>
+              <p><a href="#about" class="internal-link">About Milaap 2011</a> and the <a href="#committee" class="internal-link">Committee</a></p>
+          </div>
+          
+          <!-- start next three boxes on a new line -->
+          <div class="clear"></div>
+          
+          <div class="grid_4 alpha box four">
+              <h2>Questions</h2>
+              <p>Got questions? <a href="#askus" class="internal-link">Ask us</a> or check the <a href="#faq" class="internal-link">FAQ</a>.</p>
+          </div>
+          
+          <div class="grid_4 box five">
+              <h2>Milaap Guide</h2>
+              <p>LATEST: <a href="#milaapguide" class="internal-link">How to find your way in Singapore</a></p>
+          </div>
+          
+          <div class="grid_4 omega box six">
+              <h2>Useful Links</h2>
+              <p><a href="#links" class="internal-link">Links</a> to NTU pages and handbooks</p>
+            </a>
+          </div>
+        
+        </div> <!-- end #home -->
+        
+        <!-- REGISTER SECTION -->
+        <div id="register" class="grid_12 pseudopage">
+        	<h2>Register</h2>
+        	<p>Registration for Milaap 2011 will open in July.<!-- Register now for Milaap 2011! --></p>
+        	<!--<p>The registration fee is <strong>S$ 40.00</strong>, to be paid in cash to volunteers at the International Student Centre upon arrival in Singapore.</p>-->
+			<!--
+        	<p class="noscript"><a href="https://spreadsheets0.google.com/spreadsheet/embeddedform?formkey=dGJyZHA3a203UjRZSmFkNG1SYXpnRXc6MQ" target="_blank">Register here</a>. (opens in a new window)</p>
+            <iframe src="" width="760" height="1500" frameborder="0" marginheight="0" marginwidth="0">Loading...</iframe>
+            -->
+        </div> <!-- end #register -->
+        
+        <!-- SCHEDULE SECTION -->
+        <div id="schedule" class="grid_12 pseudopage">
+        	<h2>Schedule</h2>
+        	<p>Milaap 2011 will be held from <strong>5 August</strong> to <strong>8 August</strong> 2011. Don't worry, we'll make sure it doesn't clash with NTU's other compulsory events!</p>
+            <p>The detailed schedule will be up as soon as possible. Check back here in a few days time!</p>
+        </div> <!-- end #schedule -->
+        
+        <!-- ABOUT SECTION -->
+        <div id="about" class="grid_12 pseudopage">
+        	<h2>About</h2>
+        	
+        	<h4>What is Milaap?</h4>
+            <p>"Milaap" is an annual orientation camp for Indian freshmen, which aims to ease them into their new lifestyle. Adjusting to a new place can be quite challenging, and we hope to make this challenge a little more fun by guiding freshmen through the process of adapting and adjusting to their new surroundings at NTU and Singapore.</p>
+
+<p>At Milaap 2011, you will get to know your batchmates (you'll realize just how many there are once you get here) through a busy weekend of games and activities planned by us. You'll also get to interact with your seniors at the same time – maybe even gain a few "pearls of wisdom" from them!</p>
+
+<p>While you get to know all these people around you, get ready to have a great time touring the campus and the city. There is a campus-wide treasure hunt (it's exercise time – the campus is huge!), a city-wide Amazing Race that will leave you panting, games and maybe even a few surprises. Take a look at our schedule to get an idea of what's in store.</p>
+
+<p><a href="#register" class="internal-link">Register now</a> for Milaap – we promise you won't regret it!</p>
+
+<h4>Who are we?</h4>
+
+<p>Milaap is organized by students in the Indian Orientation Camp Committee (IOCC) – basically, second-years and up who started out at NTU quite the same as you will be, i.e. wondering whether to hang your laundry out and risk getting it wet in the rain, or spend $1 to use the dryer.</p>
+
+<p>Apart from organizing and conducting Milaap activities, we all will be available to answer your queries about NTU, from setting up bank accounts and submitting fees to getting around campus and finding the tastiest food.</p>
+
+<p>We're all really looking forward to seeing you at Milaap!</p>
+
+<p><a href="downloads/milaap2011-pamphlet.pdf">Download the Milaap 2011 pamphlet</a>.</p>
+        </div> <!-- end #about -->
+        
+        <!-- COMMITTEE SECTION -->
+        <div id="committee" class="grid_12 pseudopage">
+        	<h2>Committee</h2>
+        	<p class="noscript"><a href="committee.html" target="_blank">View the committee page</a>. (opens in a new window)</p>
+            <div id="committee-html"></div>
+        </div> <!-- end #committee -->
+        
+        <!-- ASK US SECTION -->
+        <div id="askus" class="grid_12 pseudopage">
+        	<h2>Ask Us</h2>
+        	<p>Ask us any questions and we will reply as soon as possible. Do go through the <a href="#faq" class="internal-link">Frequently Asked Questions</a> first – your query may have been answered already!</p>
+        	<p class="noscript"><a href="http://ntumilaap.wufoo.com/embed/z7x3k7/" target="_blank">Ask a question</a>. (opens in a new window)</p>
+        	<iframe height="435" allowTransparency="true" frameborder="0" scrolling="no" style="width:50%;border:none"  src=""><a href="http://ntumilaap.wufoo.com/forms/z7x3k7/" title="Ask Milaap!" rel="nofollow">Fill out my Wufoo form!</a></iframe>
+        </div> <!-- end #askus -->
+        
+        <!-- FAQ SECTION -->
+        <div id="faq" class="grid_12 pseudopage">
+        	<h2>FAQ</h2>
+            <p>In case you have any queries not answered on the FAQ, <a href="#askus" class="internal-link">ask us a question here</a> or email us at <a href="mailto:ntumilaap@gmail.com">ntumilaap@gmail.com</a>. We'll add more questions to this list as they keep rolling in.</p>
+            
+            <!-- Crime against markup? Perhaps html5 should've included an alternative -->
+<!--
+====Some Section e.g. Academics====
+	<h3>Academics</h3>
+-->
+            <dl class="faq-list">
+            
+<dt>How do I open a bank account? Which bank should I choose?</dt>
+<dd><p><a href="http://www.ocbc.com.sg/">OCBC Bank</a> and <a href="http://www.dbs.com/sg">DBS Bank</a> are probably the two most common options for opening a bank account.</p>
+<p>OCBC is convenient as there is a branch on campus – all bank operations including cash deposit can be done on campus.<br/>
+DBS has branches in India and may be more convenient for money transfer from India. The list of DBS branches in India can be found at <a href="http://www.dbs.com/dbsgroup/global_offices/default.aspx#india">http://www.dbs.com/dbsgroup/global_offices/default.aspx#india</a>.<br/>
+The DBS branch nearest to NTU is at the <a href="http://www.jurongpoint.com.sg/">Jurong Point Shopping Centre</a> (#B1-20, JP1 Jurong Point Shopping Centre, 1 Jurong West Central 2,  Singapore).</p>
+<p>In addition to these , there is also a Citibank ATM and a State Bank of India ATM on campus.</p>
+<p>To open a bank account, all you need to do is to visit any branch of the bank and fill in the requisite forms and attach supporting documents. Some banks require account holders to maintain a minimum balance (e.g. OCBC requires a minimum balance of $1000 for a statement savings account), while others may not or may have different requirements.</p></dd>
+
+<dt>How much cash should I bring for initial expenditures?</dt>
+<dd><p>Initial expenses would include paying for medical fees, buying basic necessities for your room, topping your transport EZ link card, etc.</p>
+<p>Students on the SIA-NOL scholarship should be able to manage with around $1000- $1500 for initial expenses as they will get their scholarship money within a few weeks of arrival – having $2000 should be more than enough.</p>
+<p>Students not on scholarship should bring around $3000 for their initial expenses, as mentioned in the <a href="http://www3.ntu.edu.sg/ISC2/2011_Guide_for_new_international_students/index.html">NTU 2011 Guide for New International Students</a>.</p></dd>
+
+<dt>I would like to work part-time in Singapore. If I want to earn some money while pursuing my university studies, what are the options available to me?</dt>
+<dd><p>The NTU website has a part-time job portal (accessible via <a href="http://www.ntu.edu.sg/studentlink">StudentLink</a>) where students can apply for jobs under the Work Study scheme (e.g. a job in the library).<br/>
+Students can also work off campus in various places including fast food joints like Subway.</p>
+<p>Undergraduates working part-time on campus under the Work Study Scheme may work a maximum of 14 hours a week during term time and nine hours a day or 44 hours a week during the vacation. Further information can be obtained NTU's <a href="http://www.ntu.edu.sg/Services/StudentServices/studentjobs/Pages/WorkStudyScheme.aspx">Student Jobs</a> page.</p></dd>
+
+<!--
+====end section academics====
+</dl>
+
+====start new section====
+	<h3>About Milaap</h3>
+		<dl class="faq-list">
+-->
+
+<dt>Why should I attend this camp?</dt>
+<dd><p>This camp is a great opportunity for you to meet new people in a friendly environment. Such orientation camps are crucial for integrating into university life. You can make friends without Milaap, but Milaap just makes it a lot easier.</p> 
+<p>Interacting with seniors and other peers will allow you to get a better understanding of NTU. The seniors can especially give you important information and tips about NTU from their experience so far. </p>
+<p>Lastly, come for the fun! Even if you donít learn anything (which is highly unlikely), youíll get to have some fun over the weekend, and we think thatís always a great thing!</p></dd>
+
+<dt>Does registering for Milaap mean that I have to compulsorily take part in other Indian activities in my freshman year?</dt>
+<dd><p>No, Milaap is an independent event. It does not affect participation in any other event, Indian or otherwise, in NTU. </p></dd>
+
+<dt>What is the camp all about?</dt>
+<dd><p>This 3-day camp is basically an Indian Orientation Camp, which makes freshmen go through a series of bonding activities, games and team building exercises so that they can meet new people in their batch. It also allows freshmen to interact with their seniors and have lots of fun.</p>
+<p>Similar to many faculty orientation camps, this one too aims to foster stronger ties within batch mates and in the Indian community in NTU. </p></dd>
+
+<dt>My faculty organizes its own faculty orientation camp. If Iím attending that or similar activities, should I still go for Milaap?</dt>
+<dd><p>There is not a cap on the number of camps a freshman can attend in NTU. We encourage freshmen to attend as many camps as possible.</p>
+<p>However, we welcome you to Milaap because it is a unique experience tailored to the likes and needs of new Indian foreign students. Students will get to meet other friends from the same community and it will definitely be a valuable experience.</p></dd>
+
+<dt>Where is Indian food available on campus?</dt>
+<dd><p>You can get Indian food at the following canteens: A, B, 1 and 11. North Indian food is sold at Canteen 11 while Canteen Bís Indian stall sells South Indian food. Canteen Aís stall sells a mix of both South and North Indian food.</p></dd>
+
+<dt>Is Indian food readily available near/around NTU?</dt>
+<dd><p>There are Indian stalls in nearby hawker centres, and Jurong Point, a central mall located in the Boon Lay neighbourhood, has an Indian restaurant as well. </p></dd>
+
+<dt>I am a vegetarian. What are the food choices available for me?</dt>
+<dd><p>Being vegetarian is manageable in NTU. Apart from the Indian stalls that sell a range of Indian vegetarian food, there is Chinese vegetarian also sold. Also, fast food outlets like MacDonaldís, Subway, Canadian Pizza and the eatery, Palette (within NTU) ensures that you will have choices. </p>
+<p>Alternatively, you could cook in the pantries available in your hostel. Each hostel has a few pantries in the blocks and this makes cooking a few small dishes possible. </p></dd>
+
+<!--Other questions:-->
+
+<dt>Do I need to bring formal clothes for first year? </dt>
+<dd><p>We suggest that you bring a set, in case you add business electives for Year 1 or if you need it for an event in the course of a semester.</p></dd>
+
+<dt>How are the laundry facilities? </dt>
+<dd><p>There are multiple laundry rooms in every hall, where you can wash your clothes in the washing machines provided. You have to use your own detergent. Some halls also provide dryers, but you have to pay $1 per use. There are laundry lines for you to dry your clothes and ironing facilities as well. </p></dd>
+<!--
+<dt>How does the lecture/tutorial/lab system work?</dt>
+<dd><p>A module has a certain number of lectures per week. Each week during the semester depending on the module will have certain number of hours of tutorial sessions. Some courses will have seminars, which will be a combination of lectures and tutorials. The lectures are generally common to all students and will take place in Lecture Theaters and deal with teaching of concepts. Seminars and tutorials are more towards clearing doubts and understanding the concepts taught and to aid understanding of lectures. In addition labs are meant to create a real world understanding of the concepts being taught to you.</p></dd>
+
+<dt>Do I get to choose my modules? How easy is it to get the modules of my choice?</dt>
+<dd><p>You are allocated certain core courses which you need to take as per your departments directive. In addition to that a student must complete 5 Prescribed Electives and 3 Unrestricted Electives. This is for engineering, but there are different requirements for different faculties. These courses can be chosen as per your choices. Getting a module is not that difficult just requires some time . If you want to change your modules it can be done during the add drop period for any modules using the Students Automated Registration System (STARS). </p></dd>
+
+<dt>Are some modules compulsory?</dt>
+<dd><p>Yes. Your core modules and GER-PE modules are compulsory to take. More information will be provided upon arrival.</p>
+<p>I want to do electives from a range of courses. I would like more information on this.
+This link provides details on all PEs and UEs in NTU.
+https://wish.wis.ntu.edu.sg/webexe/owa/aus_subj_cont2.main </p></dd>
+
+<dt>How do we add modules?</dt>
+<dd><p>The modules can be added at STARS at your Studentlink portal during the Add/Drop period. You need to know the index number of the module that you are adding.</p></dd>
+
+<dt>How long is one semester?</dt>
+<dd><p>One semester is typically 7 weeks of lectures + 1 week of recess + 7 weeks of lectures followed by exams. That makes it around 17 weeks approximately. For further details refer Academic Calendar : http://www.ntu.edu.sg/eventscalendar/eventscalendar.aspx   </p></dd>
+
+<dt>Can I go on exchange to another country?</dt>
+<dd><p>Yes. You can research on NTUís exchange programmes here:
+
+<p>http://global.ntu.edu.sg/global/instep/Pages/default.aspx  </p></dd>
+
+<dt>How do I interact with my professor for doubts etc?</dt>
+<dd><p>Usually, to clear doubts, tutorial time is the best time to clarify about your course content. Alternatively, you could email your professors; they usually respond quickly. Some tutors might have other policies; you can clarify this with them. </p></dd>-->
+
+            </dl>
+            
+        </div> <!-- end #faq -->
+        
+        <!-- MILAAP GUIDE -->
+        <div id="milaapguide" class="grid_12 pseudopage">
+        	<h2>Milaap Guide</h2>
+        	<p>The Milaap Guide provides you with information on surviving on the island we call NTU (it's quite easy, really!). From which laptop to buy to where to find vegetarian food on campus, we've got you covered. Keep checking back for new articles!</p>
+        	<ol class="ajax-links">
+        		
+        		<!--<li><a href="guide_laptop.html" target="_blank">Buying or bringing a laptop</a> <span class="noscript">(opens in a new window)</span><br />Find more information here!</li>-->
+        		
+        		<li><a href="guide_cellphone.html" target="_blank">Getting a Mobile Connection in Singapore</a> <span class="noscript">(opens in a new window)</span><br />Learn about getting a mobile connection in Singapore.</li>
+        		
+        	</ol>
+            <hr/>
+        	<div id="milaapguide-html"></div>
+        </div> <!-- end #milaapguide -->
+        
+         <!-- GALLERY SECTION -->
+        <div id="gallery" class="grid_12 pseudopage">
+        	<h2>Photo Gallery</h2>
+        	<p>A little peek into Milaap and life at NTU.</p>
+        	<div id="gallery-html"></div>
+        </div>
+        
+        <!-- LINKS SECTION -->
+        <div id="links" class="grid_12 pseudopage">
+        	<h2>Useful Links</h2>
+        	<p>These are some handy links to resources that you can go through for more information.</p>
+        	<ol>
+        		<li><a href="http://admissions.ntu.edu.sg/UndergraduateAdmissions/Pages/default.aspx">NTU Undergraduate Admissions</a></li>
+        		<li><a href="http://www3.ntu.edu.sg/oad2/website_files/Freshmen_Admissions_Hbk2011.pdf">Freshmen Admissions Handbook 2011/2012</a> (pdf)</li>
+        		<li><a href="http://www.ntu.edu.sg/isc/NewtoSingapore/Pages/Guidestogettingstarted.aspx">ISC Guides to Getting Started at NTU</a></li>
+        		<li><a href="http://www3.ntu.edu.sg/ISC2/2011_Guide_for_new_international_students/index.html">2011 Guide for New International Students</a></li>
+        		<li><a href="www.facebook.com/pages/NTU-Undergraduate-Admission-Events/148617451974">NTU - Undergraduate Admission Events</a> Facebook page</li>
+        		<li><a href="http://www.ntu.edu.sg/oad2/website_files/NTU%20Map_2010.pdf">NTU Map</a> (pdf)</li>
+        	</ol>
+        </div>
+        
+        <!-- CONTACT SECTION -->
+        <div id="contact" class="grid_12 pseudopage">
+        	<h2>Contact</h2>
+            <p>In case you have any queries not answered on the FAQ, do email us at <a href="mailto:ntumilaap@gmail.com">ntumilaap@gmail.com</a> or use the box on the <a class="internal-link" href="#askus">Ask Us page</a>.</p>
+        </div> <!-- end #contact -->
+        
+        <!-- PAGE NOT FOUND SECTION -->
+        <div id="notfound" class="grid_12 pseudopage">
+        	<h2>Not Found</h2>
+        	<p>If you're looking for something that you think should be here, email us at ntumilaap@gmail.com. Otherwise try looking at through the links on top.</p>
+        </div> <!-- end #notfound -->
+        
+		<div id="footer" class="grid_12">
+			<p><strong>Milaap 2011</strong>. Website developed and maintained by NTU Milaap 2011. <a href="http://browsehappy.com/">A modern browser</a> with <a href="http://enable-javascript.com/">JavaScript enabled</a> is recommended.<br/ >
+			For any queries, email <a href="mailto:ntumilaap@gmail.com">ntumilaap@gmail.com</a>.<br />
+			Older sites: Milaap <a href="http://www.ntumilaap.com/milaap2010">2010</a> | <a href="http://clubs.ntu.edu.sg/iocc">2009</a> | <a href="http://clubs.ntu.edu.sg/iocc/archive08/">2008</a>.</p>
+		</div> <!-- end #footer -->
+	
+	</div> <!-- end #outer-wrapper -->
+</body>
+
+</html>
