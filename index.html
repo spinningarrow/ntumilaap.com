@@ -123,10 +123,19 @@
 			}
 
 			else if (hash == "#gallery") {
-				// Show gallery.php via ajax
-				$("#gallery-html").load("gallery.php #content", function () {
-					$(".photogallery a").lightBox();
-				});
+				const imageHtml = i => `<li>
+					<a href="images/gallery/milaap2010/${i}.jpg" target="_blank">
+						<img src="images/gallery/milaap2010/thumbs/${i}.jpg" alt="Milaap Gallery » Milaap 2010 » Photo ${i}"/>
+					</a>
+				</li>`;
+
+				$('#gallery-html .photogallery').html(
+					[...Array(15).keys()]
+						.map(value => value + 1)
+						.map(imageHtml)
+						.join('')
+				)
+				$(".photogallery a").lightBox();
 			}
 
 			$(hash).show('fast');
@@ -407,7 +416,10 @@ https://wish.wis.ntu.edu.sg/webexe/owa/aus_subj_cont2.main </p></dd>
         <div id="gallery" class="grid_12 pseudopage">
         	<h2>Photo Gallery</h2>
         	<p>A little peek into Milaap and life at NTU.</p>
-        	<div id="gallery-html"></div>
+        	<div id="gallery-html">
+				<h3>Milaap 2010</h3>
+				<ul class="photogallery"></ul>
+			</div>
         </div>
 
         <!-- LINKS SECTION -->
